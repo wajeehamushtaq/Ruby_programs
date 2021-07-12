@@ -13,20 +13,27 @@ module Weatherman
     if File.exist?(file)
       arr = read_file(file)
       count = File.foreach(file).inject(0) { |c, _line| c + 1 }
-      i = 0
-      max = 0
-      while i != count
-        if arr[i][1].to_i > max.to_i
-          max = arr[i][1]
-          date = i
-        else
-          i += 1
-        end
-      end
+      max = max_2d_array(arr, count)[0]
+      date = max_2d_array(arr, count)[1]
       [max, date]
     else
       puts 'File does not found'
     end
+  end
+
+  # Function display highest numbr for 2d array
+  def max_2d_array(arr, count)
+    i = 0
+    max = 0
+    while i != count
+      if arr[i][1].to_i > max.to_i
+        max = arr[i][1]
+        date = i
+      else
+        i += 1
+      end
+    end
+    [max, date]
   end
 
   # Fuction to display the lowest temperature of given file
@@ -34,6 +41,13 @@ module Weatherman
     file = File.open(path)
     arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
+    mini = min_2d_array(arr, count)[0]
+    date = min_2d_array(arr, count)[1]
+    [mini, date]
+  end
+
+  # Function display lowest numbr for 2d array
+  def min_2d_array(arr, count)
     i = 1
     mini = 100
     while i != count
@@ -41,11 +55,12 @@ module Weatherman
         arr[i][3] = 100
       elsif arr[i][3].to_i < mini.to_i
         mini = arr[i][3]
+        date = i
       else
         i += 1
       end
     end
-    mini
+    [mini, date]
   end
 
   # Fuction to display the maximum humidity of given file
@@ -53,16 +68,9 @@ module Weatherman
     file = File.open(path)
     arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
-    i = 0
-    max = 0
-    while i != count
-      if arr[i][7].to_i > max.to_i
-        max = arr[i][7]
-      else
-        i += 1
-      end
-    end
-    max
+    max = max_2d_array(arr, count)[0]
+    date = max_2d_array(arr, count)[1]
+    [max, date]
   end
 
   # Function to calculate highest number from array
@@ -215,21 +223,22 @@ module Weatherman
     min_arr = []
     hum_arr = []
     year = arg2
+    date = 0
     file_path = arg3.split('/')
     file_name = file_path.last
     while month < 13
       path_mon = get_month(month.to_s)
       path = "#{arg3}/#{file_name}_#{year}_#{path_mon}.txt"
       if File.exist?(path)
-        max_arr[month] = high_temperature(path)[0].to_i
-        min_arr[month] = low_temperature(path)
-        hum_arr[month] = humidity(path)
+        max_arr[month, date] = high_temperature(path)
+        min_arr[month, date] = low_temperature(path)
+        hum_arr[month, date] = humidity(path)
       end
       month += 1
     end
-    puts("Highest: #{highest_number(max_arr)[0]}C on #{get_month(highest_number(max_arr)[1].to_s)}")
-    puts("Lowest: #{lowest_number(min_arr)[0]}C on #{get_month(lowest_number(min_arr)[1].to_s)}")
-    puts("Humidity: #{highest_number(hum_arr)[0]}C on #{get_month(highest_number(hum_arr)[1].to_s)}")
+    puts("Highest: #{highest_number(max_arr)[0]}C on #{get_month(highest_number(max_arr)[1].to_s)} #{highest_number(max_arr)[1]}")
+    puts("Lowest: #{lowest_number(min_arr)[0]}C on #{get_month(lowest_number(min_arr)[1].to_s)} #{lowest_number(min_arr)[1]}")
+    puts("Humidity: #{highest_number(hum_arr)[0]}C on #{get_month(highest_number(hum_arr)[1].to_s)} #{highest_number(hum_arr)[1]}")
   end
 
   # Function to display Option no: 2 '-a'
