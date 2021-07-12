@@ -1,15 +1,20 @@
-module WeatherMan
+# frozen_string_literal: true
+
+module Weatherman
+  def read_file(file)
+    File.readlines(file).select do |element|
+      element.split('').include? ','
+    end.map { |element| element.chomp.split ',' }
+  end
+
   # Fuction to display the highest temperature of given file
   def high_temperature(path)
     file = File.open(path)
     if File.exist?(file)
-      arr = File.readlines(file).select do |element|
-              element.split('').include? ','
-            end.map { |element| element.chomp.split ',' }
+      arr = read_file(file)
       count = File.foreach(file).inject(0) { |c, _line| c + 1 }
       i = 0
       max = 0
-      date = 0
       while i != count
         if arr[i][1].to_i > max.to_i
           max = arr[i][1]
@@ -27,9 +32,7 @@ module WeatherMan
   # Fuction to display the lowest temperature of given file
   def low_temperature(path)
     file = File.open(path)
-    arr = File.readlines(file).select do |element|
-            element.split('').include? ','
-          end.map { |element| element.chomp.split ',' }
+    arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
     i = 1
     mini = 100
@@ -48,9 +51,7 @@ module WeatherMan
   # Fuction to display the maximum humidity of given file
   def humidity(path)
     file = File.open(path)
-    arr = File.readlines(file).select do |element|
-            element.split('').include? ','
-          end.map { |element| element.chomp.split ',' }
+    arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
     i = 0
     max = 0
@@ -114,16 +115,13 @@ module WeatherMan
       '11' => 'Nov',
       '12' => 'Dec'
     }
-
     months[str]
   end
 
   # Function to display the highest average temperature from given month file
   def highest_average(path)
     file = File.open(path)
-    arr = File.readlines(file).select do |element|
-            element.split('').include? ','
-          end.map { |element| element.chomp.split ',' }
+    arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
     i = 0
     sum = 0
@@ -137,9 +135,7 @@ module WeatherMan
   # Function to display the lowest average temperature from given month file
   def lowest_average(path)
     file = File.open(path)
-    arr = File.readlines(file).select do |element|
-            element.split('').include? ','
-          end.map { |element| element.chomp.split ',' }
+    arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
     i = 0
     sum = 0
@@ -153,9 +149,7 @@ module WeatherMan
   # Function to display the average humidity from given month file
   def humidity_average(path)
     file = File.open(path)
-    arr = File.readlines(file).select do |element|
-            element.split('').include? ','
-          end.map { |element| element.chomp.split ',' }
+    arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
     i = 0
     sum = 0
@@ -169,9 +163,7 @@ module WeatherMan
   # Function of bar chart for highest and lowest temperature on each day
   def bar_chart
     file = File.open('/home/wajeeha/Downloads/Devsinc/Week 3/Murree_weather/Murree_weather_2004_Aug.txt')
-    arr = File.readlines(file).select do |element|
-            element.split('').include? ','
-          end.map { |element| element.chomp.split ',' }
+    arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
     i = 1
     j = 0
@@ -195,15 +187,13 @@ module WeatherMan
   # Function to display inline bar chart for highest and lowest temperature on each day
   def inline_bar_chart(path)
     file = File.open(path)
-    arr = File.readlines(file).select do |element|
-            element.split('').include? ','
-          end.map { |element| element.chomp.split ',' }
+    arr = read_file(file)
     count = File.foreach(file).inject(0) { |c, _line| c + 1 }
     i = 1
     j = 0
     while i != count
       k = 0
-      print i.to_s + ' '
+      print "#{i} "
       while k != arr[i][3].to_i
         print '*'.blue
         k += 1
@@ -213,14 +203,13 @@ module WeatherMan
         print '*'.red
         j += 1
       end
-      print k.to_s + '-' + j.to_s
-      print "\n"
+      puts "#{k}-#{j}"
       i += 1
     end
   end
 
   # Function to display Option no: 1 '-e'
-  def option_1(arg2, arg3)
+  def option1(arg2, arg3)
     month = 1
     max_arr = []
     min_arr = []
@@ -238,13 +227,13 @@ module WeatherMan
       end
       month += 1
     end
-    puts('Highest: ' + highest_number(max_arr)[0].to_s + 'C on ' + get_month(highest_number(max_arr)[1].to_s))
-    puts('Lowest: ' + lowest_number(min_arr)[0].to_s + 'C on ' + get_month(lowest_number(min_arr)[1].to_s))
-    puts('Humidity: ' + highest_number(hum_arr)[0].to_s + 'C on ' + get_month(highest_number(hum_arr)[1].to_s))
+    puts("Highest: #{highest_number(max_arr)[0]}C on #{get_month(highest_number(max_arr)[1].to_s)}")
+    puts("Lowest: #{lowest_number(min_arr)[0]}C on #{get_month(lowest_number(min_arr)[1].to_s)}")
+    puts("Humidity: #{highest_number(hum_arr)[0]}C on #{get_month(highest_number(hum_arr)[1].to_s)}")
   end
 
   # Function to display Option no: 2 '-a'
-  def option_2(arg2, arg3)
+  def option2(arg2, arg3)
     date = arg2.split('/')
     year = date[0]
     month = date[1]
@@ -252,13 +241,13 @@ module WeatherMan
     file_name = file_path.last
     path_mon = get_month(month.to_s)
     path = "#{arg3}/#{file_name}_#{year}_#{path_mon}.txt"
-    puts('Highest Average: ' + highest_average(path).to_s + 'C ')
-    puts('Lowest Average: ' + lowest_average(path).to_s + 'C ')
-    puts('Average Humidity: ' + humidity_average(path).to_s + '% ')
+    puts("Highest Average: #{highest_average(path)}C ")
+    puts("Lowest Average: #{lowest_average(path)}C ")
+    puts("Average Humidity: #{humidity_average(path)}% ")
   end
 
   # Function to display Option no: 3 '-c'
-  def option_3(arg2, arg3)
+  def option3(arg2, arg3)
     date = arg2.split('/')
     year = date[0]
     month = date[1]
@@ -266,14 +255,13 @@ module WeatherMan
     file_name = file_path.last
     path_mon = get_month(month.to_s)
     path = "#{arg3}/#{file_name}_#{year}_#{path_mon}.txt"
-    puts path_mon + ' ' + year
+    puts "#{path_mon} #{year}"
     inline_bar_chart(path)
   end
 end
 
-
- # String classs to change color of text
- class String
+# String classs to change color of text
+class String
   # colorization
   def colorize(color_code)
     "\e[#{color_code}m#{self}\e[0m"
