@@ -1,6 +1,4 @@
 module WeatherMan
-  # frozen_string_literal: true
-
   # Fuction to display the highest temperature of given file
   def high_temperature(path)
     file = File.open(path)
@@ -11,14 +9,16 @@ module WeatherMan
       count = File.foreach(file).inject(0) { |c, _line| c + 1 }
       i = 0
       max = 0
+      date = 0
       while i != count
         if arr[i][1].to_i > max.to_i
           max = arr[i][1]
+          date = i
         else
           i += 1
         end
       end
-      max
+      [max, date]
     else
       puts 'File does not found'
     end
@@ -166,22 +166,6 @@ module WeatherMan
     sum / count
   end
 
-  # String classs to change color of text
-  class String
-    # colorization
-    def colorize(color_code)
-      "\e[#{color_code}m#{self}\e[0m"
-    end
-
-    def red
-      colorize(31)
-    end
-
-    def blue
-      colorize(34)
-    end
-  end
-
   # Function of bar chart for highest and lowest temperature on each day
   def bar_chart
     file = File.open('/home/wajeeha/Downloads/Devsinc/Week 3/Murree_weather/Murree_weather_2004_Aug.txt')
@@ -248,7 +232,7 @@ module WeatherMan
       path_mon = get_month(month.to_s)
       path = "#{arg3}/#{file_name}_#{year}_#{path_mon}.txt"
       if File.exist?(path)
-        max_arr[month] = high_temperature(path)
+        max_arr[month] = high_temperature(path)[0].to_i
         min_arr[month] = low_temperature(path)
         hum_arr[month] = humidity(path)
       end
@@ -284,5 +268,22 @@ module WeatherMan
     path = "#{arg3}/#{file_name}_#{year}_#{path_mon}.txt"
     puts path_mon + ' ' + year
     inline_bar_chart(path)
+  end
+end
+
+
+ # String classs to change color of text
+ class String
+  # colorization
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def red
+    colorize(31)
+  end
+
+  def blue
+    colorize(34)
   end
 end
