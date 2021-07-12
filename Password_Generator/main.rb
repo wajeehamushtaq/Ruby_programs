@@ -13,10 +13,10 @@ special_characters = ''
 flag = true
 
 while flag
-  puts "Select Options: "
-  puts "1: Enter Alphabets "
-  puts "2: Enter Numbers  "
-  puts "3: Enter special characters "
+  puts 'Select Options: '
+  puts '1: Enter Alphabets '
+  puts '2: Enter Numbers  '
+  puts '3: Enter special characters '
   puts "4: Display passwords \n"
   option = Integer(gets)
 
@@ -25,6 +25,10 @@ while flag
   when 1
     print 'Enter alphabets: '
     alphabets = gets
+    unless alphabets.match(/^[[:alpha:][:blank:]]+$/)
+      puts 'Please enter alphabets only'
+      alphabets = ''
+    end
 
   when 2
     print 'Enter number: '
@@ -37,7 +41,7 @@ while flag
     print "\n"
 
   when 4
-    puts "Generated Password: "
+    puts 'Generated Password: '
     puts PasswordGenerator.random_password(pass_length, alphabets, numbers.to_s, special_characters)
     flag = false
     print "\n"
